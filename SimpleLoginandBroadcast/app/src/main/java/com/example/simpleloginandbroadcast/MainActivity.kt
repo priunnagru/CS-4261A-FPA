@@ -17,8 +17,13 @@ class MainActivity : AppCompatActivity() {
 
         val intentBroadcast = Intent(this, BroadcastActivity::class.java)
         buttonLogin.setOnClickListener {
-            if (inputUsername.text.toString() == "admin"
-                && inputPassword.text.toString() == "admin") {
+            val username = inputUsername.text.toString()
+            val password = inputPassword.text.toString()
+            if (username == "admin" && password == "admin") {
+                intentBroadcast.putExtra("username", username)
+                inputUsername.setText("")
+                inputPassword.setText("")
+
                 startActivity(intentBroadcast)
             }
         }
