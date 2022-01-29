@@ -15,6 +15,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 
 class BroadcastActivity : AppCompatActivity() {
+    var attached = true
+
     // Same as root and user_info [See MainActivity] but for the emojis
     // TODO: OPTIONAL change name to reflect text instead of emoji; shift + F6 refactors
     lateinit var emojiRef: DatabaseReference
@@ -30,8 +32,14 @@ class BroadcastActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 emojiDS = snapshot
                 // TODO: Add function call to broadcast notifications when the data is changed
-                    // TODO: Make sure no messages sent when attached only changed
+                    // TODO: Make sure no messages sent when attached only data changed [See Below]
                 // TODO: OPTIONAL Add update to UI to show messages on page if time allows
+
+                // Basic testing to see if attached or changed
+                if (attached) {
+                    println("\n\n\n\nattached not changed\n\n\n\n")
+                    attached = false
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
