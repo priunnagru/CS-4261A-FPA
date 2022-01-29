@@ -22,6 +22,10 @@
             android:name=".BroadcastActivity"
             android:parentActivityName=".MainActivity">
         </activity>
+        <activity
+            android:name=".RegisterActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
     </application>
 
 </manifest>
