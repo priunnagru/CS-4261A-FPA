@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "39403952554",
+    "project_id": "cs-4261a-fpa",
+    "storage_bucket": "cs-4261a-fpa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39403952554:android:04860d4f11c537504173d3",
+        "android_client_info": {
+          "package_name": "com.example.simpleloginandbroadcast"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39403952554-ekbcu8np808erdpjnte6nsp2djo0arer.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdUQulnNoGhm5SL3971J40uy-n190V7zc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39403952554-ekbcu8np808erdpjnte6nsp2djo0arer.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
