@@ -84,12 +84,14 @@ class BroadcastActivity : AppCompatActivity() {
         val messageBox = findViewById<EditText>(R.id.editTextMessage)
 
         sendMessage.setOnClickListener {
-            var messageCount = messageDS.childrenCount
-            val htmlMessage = "" + MainActivity.accountUser + ": " + messageBox.text
+            if (messageBox.text.isNotBlank()) {
+                var messageCount = messageDS.childrenCount
+                val htmlMessage = "" + MainActivity.accountUser + ": " + messageBox.text
 
-            messageRef.child("m${++messageCount}").setValue(htmlMessage)
+                messageRef.child("m${++messageCount}").setValue(htmlMessage)
 
-            messageBox.text.clear()
+                messageBox.text.clear()
+            }
         }
 
         // this simply allows you to press done on the keyboard to send the message
