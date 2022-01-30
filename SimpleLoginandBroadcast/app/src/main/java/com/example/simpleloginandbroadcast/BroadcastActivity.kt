@@ -2,10 +2,12 @@ package com.example.simpleloginandbroadcast
 
 import android.app.ActivityManager
 import android.app.AlertDialog
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.renderscript.Sampler
 import android.text.method.ScrollingMovementMethod
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
@@ -37,20 +39,17 @@ class BroadcastActivity : AppCompatActivity() {
         val receivedMessages = findViewById<TextView>(R.id.textViewReceivedMessages)
         receivedMessages.movementMethod = ScrollingMovementMethod()
 
-        messageRef = MainActivity.rootRef.child("emoji_info")
+        messageRef = MainActivity.rootRef.child("message_info")
         messageListener = messageRef.addValueEventListener(object: ValueEventListener {
             // Reminder: called when listener is attached and when data changes
             override fun onDataChange(snapshot: DataSnapshot) {
                 messageDS = snapshot
 
-                // TODO: OPTIONAL Add update to UI to show messages on page if time allows
-
                 // Basic testing to see if attached or changed
                 if (attached) {
-                    //println("\n\n\n\nattached not changed\n\n\n\n")
                     attached = false
                 } else {
-                    val temp = messageDS.child("e${messageDS.childrenCount}").value.toString()
+                    val temp = messageDS.child("m${messageDS.childrenCount}").value.toString()
                     sendNotification(temp)
                 }
             }
@@ -82,7 +81,7 @@ class BroadcastActivity : AppCompatActivity() {
             var messageCount = messageDS.childrenCount
             val htmlMessage = "" + MainActivity.accountUser + ": " + messageBox.text
 
-            messageRef.child("e${++messageCount}").setValue(htmlMessage)
+            messageRef.child("m${++messageCount}").setValue(htmlMessage)
 
             messageBox.text.clear()
         }
@@ -140,14 +139,26 @@ class BroadcastActivity : AppCompatActivity() {
             return
         }
 
+//        // Create an Intent for the activity you want to start
+//        val resultIntent = Intent(this, BroadcastActivity::class.java)
+//        // Create the TaskStackBuilder
+//        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+//            addNextIntentWithParentStack(resultIntent)
+//            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+//        }
+
         val id = getString(R.string.channel_messages_id)
-        var builder = NotificationCompat.Builder(this, id)
+        val builder = NotificationCompat.Builder(this, id)
             .setSmallIcon(R.drawable.common_full_open_on_phone)
             .setContentTitle(message.substringBefore(":") + " broadcasted a message!")
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle()
                 .bigText(message))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+            .setContentIntent(PendingIntent.getActivity(this, 0,
+                Intent(this, BroadcastActivity :: class.java), PendingIntent.FLAG_MUTABLE));
+            //.setContentIntent(resultPendingIntent)
 
         with(NotificationManagerCompat.from(this)) {
             notify(notificationId++, builder.build())
