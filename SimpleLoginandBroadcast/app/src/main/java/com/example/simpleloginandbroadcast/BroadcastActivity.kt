@@ -1,10 +1,12 @@
 package com.example.simpleloginandbroadcast
 
+import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.renderscript.Sampler
+import android.text.method.ScrollingMovementMethod
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -31,6 +33,9 @@ class BroadcastActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_broadcast)
+
+        val receivedMessages = findViewById<TextView>(R.id.textViewReceivedMessages)
+        receivedMessages.movementMethod = ScrollingMovementMethod()
 
         messageRef = MainActivity.rootRef.child("emoji_info")
         messageListener = messageRef.addValueEventListener(object: ValueEventListener {
@@ -125,6 +130,16 @@ class BroadcastActivity : AppCompatActivity() {
     }
 
     fun sendNotification(message : String) {
+        val receivedMessages = findViewById<TextView>(R.id.textViewReceivedMessages)
+
+        receivedMessages.text = "${receivedMessages.text}\n$message"
+
+        val curr = ActivityManager.RunningAppProcessInfo()
+        ActivityManager.getMyMemoryState(curr)
+        if (curr.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+            return
+        }
+
         val id = getString(R.string.channel_messages_id)
         var builder = NotificationCompat.Builder(this, id)
             .setSmallIcon(R.drawable.common_full_open_on_phone)
