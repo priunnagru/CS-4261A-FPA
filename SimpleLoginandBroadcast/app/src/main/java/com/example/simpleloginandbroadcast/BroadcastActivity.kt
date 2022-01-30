@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.renderscript.Sampler
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -21,9 +22,9 @@ class BroadcastActivity : AppCompatActivity() {
     var attached = true
 
     // Same as root and user_info [See MainActivity] but for the emojis
-    // TODO: OPTIONAL change name to reflect text instead of emoji; shift + F6 refactors
     lateinit var messageRef: DatabaseReference
     lateinit var messageDS: DataSnapshot
+    lateinit var messageListener: ValueEventListener
 
     var notificationId = 0;
 
@@ -32,12 +33,10 @@ class BroadcastActivity : AppCompatActivity() {
         setContentView(R.layout.activity_broadcast)
 
         messageRef = MainActivity.rootRef.child("emoji_info")
-        messageRef.addValueEventListener(object: ValueEventListener {
+        messageListener = messageRef.addValueEventListener(object: ValueEventListener {
             // Reminder: called when listener is attached and when data changes
             override fun onDataChange(snapshot: DataSnapshot) {
                 messageDS = snapshot
-
-
 
                 // TODO: OPTIONAL Add update to UI to show messages on page if time allows
 
@@ -104,6 +103,7 @@ class BroadcastActivity : AppCompatActivity() {
                     val message = "Logged out."
                     Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
                     super.onBackPressed()
+                    messageRef.removeEventListener(messageListener)
                 })
             setNegativeButton("No",
                 DialogInterface.OnClickListener { _, _ ->
@@ -130,6 +130,8 @@ class BroadcastActivity : AppCompatActivity() {
             .setSmallIcon(R.drawable.common_full_open_on_phone)
             .setContentTitle(message.substringBefore(":") + " broadcasted a message!")
             .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(message))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         with(NotificationManagerCompat.from(this)) {
