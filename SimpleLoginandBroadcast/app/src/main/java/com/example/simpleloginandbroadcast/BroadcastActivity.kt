@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener
 
 class BroadcastActivity : AppCompatActivity() {
     var attached = true
+    val NUM_MESSAGES_DB = 5
 
     // Same as root and user_info [See MainActivity] but for the emojis
     lateinit var messageRef: DatabaseReference
@@ -51,6 +52,11 @@ class BroadcastActivity : AppCompatActivity() {
                 } else {
                     val temp = messageDS.child("m${messageDS.childrenCount}").value.toString()
                     sendNotification(temp)
+
+                    if (messageDS.childrenCount > 100) {
+                        messageRef.setValue(null)
+                        attached = true     // Abuse of variable; when changed to null, onDataChange does nothing
+                    }
                 }
             }
 
@@ -138,14 +144,6 @@ class BroadcastActivity : AppCompatActivity() {
         if (curr.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
             return
         }
-
-//        // Create an Intent for the activity you want to start
-//        val resultIntent = Intent(this, BroadcastActivity::class.java)
-//        // Create the TaskStackBuilder
-//        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-//            addNextIntentWithParentStack(resultIntent)
-//            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-//        }
 
         val id = getString(R.string.channel_messages_id)
         val builder = NotificationCompat.Builder(this, id)
